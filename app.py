@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
 from hmmlearn.hmm import MultinomialHMM
 import networkx as nx
 import plotly.graph_objects as go
@@ -85,26 +84,51 @@ if st.sidebar.button("Train Model"):
         # Visualizations
         st.header("Visualizations")
         
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+        iterations = list(range(1, max_iterations + 1))
         
         # Plot 1: Log Likelihood vs Iterations
-        ax1.plot(range(1, max_iterations + 1), log_likelihoods, marker='o', linestyle='-')
-        ax1.set_title("Log Likelihood P(O | λ) vs Iterations")
-        ax1.set_xlabel("Iteration")
-        ax1.set_ylabel("Log Likelihood")
-        ax1.grid(True)
+        fig1 = go.Figure()
+        fig1.add_trace(go.Scatter(
+            x=iterations, 
+            y=log_likelihoods, 
+            mode='lines+markers', 
+            name='Log Likelihood',
+            hovertemplate='Iteration: %{x}<br>Log Likelihood: %{y:.6f}<extra></extra>'
+        ))
+        fig1.update_layout(
+            title="Log Likelihood P(O | λ) vs Iterations",
+            xaxis_title="Iteration",
+            yaxis_title="Log Likelihood",
+            template="plotly_white",
+            hovermode="x unified"
+        )
         
         # Plot 2: 1 - P(O | lambda) vs Iterations
         probabilities = np.exp(log_likelihoods)
         one_minus_probs = 1 - probabilities
         
-        ax2.plot(range(1, max_iterations + 1), one_minus_probs, marker='x', linestyle='-', color='red')
-        ax2.set_title("1 - P(O | λ) vs Iterations")
-        ax2.set_xlabel("Iteration")
-        ax2.set_ylabel("1 - Probability")
-        ax2.grid(True)
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=iterations, 
+            y=one_minus_probs, 
+            mode='lines+markers', 
+            name='1 - Probability', 
+            line=dict(color='red'),
+            hovertemplate='Iteration: %{x}<br>1 - Probability: %{y:.6e}<extra></extra>'
+        ))
+        fig2.update_layout(
+            title="1 - P(O | λ) vs Iterations",
+            xaxis_title="Iteration",
+            yaxis_title="1 - Probability",
+            template="plotly_white",
+            hovermode="x unified"
+        )
         
-        st.pyplot(fig)
+        col_fig1, col_fig2 = st.columns(2)
+        with col_fig1:
+            st.plotly_chart(fig1, use_container_width=True)
+        with col_fig2:
+            st.plotly_chart(fig2, use_container_width=True)
         
         # State Transition Diagram
         st.subheader("State Transition Diagram")
