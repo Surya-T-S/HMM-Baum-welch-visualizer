@@ -51,8 +51,12 @@ print(model.transmat_)
 print("\nFinal Emission Matrix (B):")
 print(model.emissionprob_)
 
+final_log_likelihood = model.score(X)
 print("\nFinal Log Likelihood P(O | lambda):")
-print(model.score(X))
+print(final_log_likelihood)
+
+print("\nFinal Probability P(O | lambda):")
+print(np.exp(final_log_likelihood))
 
 # STEP 8: Plot convergence graph
 plt.figure(figsize=(12, 5))

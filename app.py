@@ -57,6 +57,9 @@ if st.sidebar.button("Train Model"):
             
         status_text.text("Training Complete!")
         
+        # Calculate Final Log Likelihood P(O | λ)
+        final_log_likelihood = model.score(X)
+        
         # Display Results
         st.header("Training Results")
         
@@ -74,7 +77,10 @@ if st.sidebar.button("Train Model"):
             st.dataframe(model.emissionprob_, width='stretch')
             
             st.subheader("Final Log Likelihood P(O | λ)")
-            st.info(f"{model.score(X):.6f}")
+            st.info(f"{final_log_likelihood:.6f}")
+            
+            st.subheader("Final Probability P(O | λ)")
+            st.info(f"{np.exp(final_log_likelihood):.6e}")
             
         # Visualizations
         st.header("Visualizations")
