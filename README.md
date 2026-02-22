@@ -12,6 +12,19 @@ A minimal, interactive implementation of the Baum-Welch (Expectation-Maximizatio
 
 ---
 
+## Gallery
+
+### Web App Interface
+![Web App Interface](./assets/app_screenshot.png)
+
+### Convergence Plots
+![Convergence Plots](./assets/convergence_plots.png)
+
+### State Transition Diagram
+![State Transition Diagram](./assets/state_diagram.png)
+
+---
+
 ## User Manual & Quick Start
 
 ### 1. Run the Interactive Web App (Recommended)
@@ -40,19 +53,6 @@ For a quick terminal-based execution that prints the matrices and final probabil
 ```powershell
 python train.py
 ```
-
----
-
-## Gallery
-
-### Web App Interface
-![Web App Interface](./assets/app_screenshot.png)
-
-### Convergence Plots
-![Convergence Plots](./assets/convergence_plots.png)
-
-### State Transition Diagram
-![State Transition Diagram](./assets/state_diagram.png)
 
 ---
 
