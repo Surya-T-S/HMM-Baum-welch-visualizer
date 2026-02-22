@@ -4,9 +4,11 @@ A minimal, interactive implementation of the Baum-Welch (Expectation-Maximizatio
 
 ---
 
-## Author Details
-- **Name:** Surya T S
-- **University Register Number:** TCR24CS069
+<div align="center">
+  <h3><b>Author Details</b></h3>
+  <p><b>Name:</b> Surya T S</p>
+  <p><b>University Register Number:</b> TCR24CS069</p>
+</div>
 
 ---
 
