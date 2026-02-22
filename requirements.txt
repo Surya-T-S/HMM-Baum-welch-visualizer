@@ -5,3 +5,4 @@ networkx
 streamlit
 plotly
 graphviz
+streamlit-echarts

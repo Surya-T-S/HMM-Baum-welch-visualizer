@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 from hmmlearn.hmm import MultinomialHMM
-import networkx as nx
 import plotly.graph_objects as go
 import warnings
 import logging
@@ -139,34 +138,124 @@ if st.sidebar.button("Train Model"):
         # State Transition Diagram
         st.subheader("State Transition Diagram")
         
-        # Use graphviz to generate a highly accurate and beautiful state transition diagram
-        import graphviz
+        from streamlit_echarts import st_echarts
         
-        # Create a directed graph
-        dot = graphviz.Digraph(comment='State Transition Diagram')
-        dot.attr(rankdir='LR', size='8,5')
-        
-        # Add nodes with styling
-        dot.attr('node', shape='circle', style='filled', fillcolor='lightblue', 
-                 color='black', fontname='Helvetica', fontsize='14', penwidth='2')
-                 
+        # Prepare nodes
+        nodes = []
         for i in range(n_states):
-            dot.node(f"State {i}")
+            nodes.append({
+                "name": f"State {i}",
+                "symbolSize": 60,
+                "itemStyle": {
+                    "color": "#E1F5FE",
+                    "borderColor": "#0288D1",
+                    "borderWidth": 2
+                },
+                "label": {
+                    "show": True,
+                    "fontSize": 14,
+                    "fontWeight": "bold",
+                    "color": "#000"
+                }
+            })
             
-        # Add edges with styling
-        dot.attr('edge', fontname='Helvetica', fontsize='12', color='gray40')
-        
+        # Prepare edges
+        links = []
         for i in range(n_states):
             for j in range(n_states):
                 prob = model.transmat_[i, j]
-                if prob > 0.01: # Only show significant transitions
-                    # Scale penwidth based on probability
-                    penwidth = str(max(1.0, prob * 5.0))
-                    dot.edge(f"State {i}", f"State {j}", label=f" {prob:.4f} ", penwidth=penwidth)
+                if prob > 0.01:
+                    # Calculate curvature to prevent overlapping of mutual edges
+                    curveness = 0.2 if i != j else 0.5
                     
-        # Render the graph in Streamlit
-        st.graphviz_chart(dot)
+                    links.append({
+                        "source": f"State {i}",
+                        "target": f"State {j}",
+                        "value": float(prob),
+                        "label": {
+                            "show": True,
+                            "formatter": f"{prob:.3f}",
+                            "fontSize": 12,
+                            "color": "#000",
+                            "backgroundColor": "rgba(255,255,255,0.8)",
+                            "padding": 2,
+                            "borderRadius": 3
+                        },
+                        "lineStyle": {
+                            "width": max(1.5, prob * 6),
+                            "curveness": curveness,
+                            "color": "#00796B" if i == j else "#546E7A"
+                        }
+                    })
+                    
+        # ECharts configuration
+        option = {
+            "title": {
+                "text": "Interactive State Transitions",
+                "left": "center",
+                "textStyle": {
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "tooltip": {
+                "trigger": "item",
+                "formatter": "{b}: {c}"
+            },
+            "animationDurationUpdate": 1500,
+            "animationEasingUpdate": "quinticInOut",
+            "series": [
+                {
+                    "type": "graph",
+                    "layout": "circular" if n_states > 2 else "force",
+                    "force": {
+                        "repulsion": 1000,
+                        "edgeLength": 200
+                    } if n_states <= 2 else None,
+                    "symbolSize": 50,
+                    "roam": True, # Allows dragging and zooming
+                    "label": {
+                        "show": True
+                    },
+                    "edgeSymbol": ["circle", "arrow"],
+                    "edgeSymbolSize": [4, 12],
+                    "edgeLabel": {
+                        "show": True,
+                        "fontSize": 12
+                    },
+                    "data": nodes,
+                    "links": links,
+                    "lineStyle": {
+                        "opacity": 0.9,
+                        "width": 2,
+                        "curveness": 0.2
+                    },
+                    "emphasis": {
+                        "focus": "adjacency",
+                        "lineStyle": {
+                            "width": 8
+                        }
+                    }
+                }
+            ]
+        }
         
+        # Add a nice border around the interactive diagram
+        st.markdown("""
+        <style>
+        .echarts-container {
+            border: 2px solid black;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('<div class="echarts-container">', unsafe_allow_html=True)
+        st_echarts(options=option, height="500px")
+        st.markdown('</div>', unsafe_allow_html=True)
+            
     except Exception as e:
         st.error(f"An error occurred: {e}")
         import traceback
