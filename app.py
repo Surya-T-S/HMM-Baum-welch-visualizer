@@ -150,8 +150,8 @@ if st.sidebar.button("Train Model"):
         center_x = 0
         center_y = 0
         
-        # Distinct, vibrant color palette for each state to make transitions distinguishable
-        state_colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']
+        # Eye-pleasing, highly visible color palette (deep jewel tones and rich colors)
+        state_colors = ["#2E86C1", "#28B463", "#D68910", "#CB4335", "#8E44AD", "#17A589", "#D4AC0D", "#BA4A00", "#2C3E50"]
         
         for i in range(n_states):
             # Calculate angle for this node (evenly spaced around a circle)
@@ -172,17 +172,19 @@ if st.sidebar.button("Train Model"):
                 },
                 "symbolSize": 100, # INCREASED NODE SIZE for better visibility
                 "itemStyle": {
-                    "color": "#ffffff", # Clean white background
-                    "borderColor": color, # Unique color for each state
-                    "borderWidth": 4, # Thicker border
-                    "shadowBlur": 10, # Add drop shadow to nodes
-                    "shadowColor": "rgba(0,0,0,0.2)"
+                    "color": "#ffffff", # Pure white states
+                    "borderColor": color, # Border matches the state color for better definition
+                    "borderWidth": 4, # Thicker border for clarity
+                    "shadowBlur": 15, 
+                    "shadowColor": "rgba(0,0,0,0.2)", # Slightly stronger shadow
+                    "shadowOffsetX": 0,
+                    "shadowOffsetY": 4
                 },
                 "label": {
                     "show": True,
-                    "fontSize": 18, # Larger font
+                    "fontSize": 20, # Larger font
                     "fontWeight": "bold",
-                    "color": color, # Match border color
+                    "color": "#000000", # Pure black text for maximum readability
                     "position": "inside",
                     "formatter": "{b}" # Show name
                 }
@@ -209,64 +211,27 @@ if st.sidebar.button("Train Model"):
                         "target": f"State {j}",
                         "value": float(prob),
                         "tooltip": {
-                            "formatter": f"<div style='padding:5px;'><b>Transition</b><br/><hr style='margin:5px 0;border:none;border-top:1px solid #ccc;'/>From: <b>State {i}</b><br/>To: <b>State {j}</b><br/>Probability: <b style='font-size:14px; color:{source_color};'>{prob:.2%}</b> <span style='color:#888;'>({prob:.4f})</span></div>"
+                            "formatter": f"<div style='padding:5px; text-align:center;'><b>Transition</b><br/><hr style='margin:5px 0;border:none;border-top:1px solid #ccc;'/><b>State {i}</b> &rarr; <b>State {j}</b><br/>Probability: <b style='font-size:14px; color:{source_color};'>{prob:.2%}</b> <span style='color:#888;'>({prob:.4f})</span></div>"
                         },
                         "label": {
                             "show": True,
                             "formatter": f"{prob:.2f}",
-                            "fontSize": 14, 
-                            "fontWeight": "bold",
-                            "color": "#333", 
+                            "fontSize": 16, # Larger font for clarity
+                            "fontWeight": "bold", # Bold font for clarity
+                            "color": "#000000", # Pure black text for maximum contrast
                             "backgroundColor": "#ffffff", 
-                            "padding": [4, 6], 
+                            "padding": [4, 6], # More padding
                             "borderRadius": 4, 
-                            "borderWidth": 1.5, 
-                            "borderColor": source_color # Border matches the source state
+                            "borderWidth": 2, # Thicker border
+                            "borderColor": source_color # Border matches the source state color
                         },
                         "lineStyle": {
-                            "width": max(2.5, prob * 10), # Thicker lines overall
+                            "width": max(3.0, prob * 10), # Thicker lines for clarity
                             "curveness": curveness,
                             "color": source_color, # Line color matches the source state
-                            "opacity": 0.6 # Lower default opacity so overlapping lines don't create dark blobs
+                            "opacity": 0.95, # Very high opacity so lines are very clear and solid
                         }
                     })
-                    
-                    # 2. Animated particle edge (only for transitions between different states)
-                    if i != j:
-                        # Calculate exact start and end points on the edge of the circle
-                        dx = nodes[j]["value"][0] - nodes[i]["value"][0]
-                        dy = nodes[j]["value"][1] - nodes[i]["value"][1]
-                        dist = math.hypot(dx, dy)
-                        
-                        if dist > 0:
-                            # Node radius is 50 (symbolSize is 100, so radius is 50)
-                            # We add padding (55) so it stops right at the border
-                            node_radius = 55
-                            
-                            # Direction vector
-                            dir_x = dx / dist
-                            dir_y = dy / dist
-                            
-                            # Start point (edge of source node)
-                            start_x = nodes[i]["value"][0] + dir_x * node_radius
-                            start_y = nodes[i]["value"][1] + dir_y * node_radius
-                            
-                            # End point (edge of target node)
-                            end_x = nodes[j]["value"][0] - dir_x * node_radius
-                            end_y = nodes[j]["value"][1] - dir_y * node_radius
-                            
-                            lines_data.append({
-                                "coords": [
-                                    [start_x, start_y],
-                                    [end_x, end_y]
-                                ],
-                                "lineStyle": {
-                                    "curveness": curveness
-                                },
-                                "effect": {
-                                    "color": source_color # Particle matches the source state color
-                                }
-                            })
                     
         # ECharts configuration
         option = {
@@ -274,18 +239,18 @@ if st.sidebar.button("Train Model"):
                 "text": "Interactive State Transitions (Drag background to pan, scroll to zoom)",
                 "left": "center",
                 "textStyle": {
-                    "fontSize": 18,
-                    "fontWeight": "bold",
-                    "color": "#2C3E50"
+                    "fontSize": 16,
+                    "fontWeight": "bold", # Bolder title
+                    "color": "#444444"
                 }
             },
             "tooltip": {
                 "trigger": "item",
                 "backgroundColor": "rgba(255, 255, 255, 0.95)",
-                "borderColor": "#ccc",
+                "borderColor": "#cccccc", 
                 "borderWidth": 1,
                 "textStyle": {
-                    "color": "#333"
+                    "color": "#333333"
                 }
             },
             "xAxis": {
@@ -318,48 +283,32 @@ if st.sidebar.button("Train Model"):
                     "coordinateSystem": "cartesian2d", 
                     "symbolSize": 100, # Match new node size
                     "edgeSymbol": ["none", "arrow"],
-                    "edgeSymbolSize": [0, 20], # Larger arrows
+                    "edgeSymbolSize": [0, 15], # Smaller arrows as requested
                     "data": nodes,
                     "links": links,
+                    "blur": {
+                        "itemStyle": {
+                            "opacity": 0.2 # Make non-adjacent nodes faint
+                        },
+                        "lineStyle": {
+                            "opacity": 0.05 # Make non-adjacent lines almost invisible
+                        }
+                    },
                     "emphasis": {
                         "focus": "adjacency",
                         "lineStyle": {
-                            "width": 10, # Much thicker on hover
+                            "width": 5, # Explicitly set a width instead of inherit
                             "opacity": 1, # Fully opaque on hover
-                            "shadowBlur": 15,
-                            "shadowColor": "rgba(0, 0, 0, 0.4)"
+                            "shadowBlur": 0 # Remove shadow
                         },
                         "label": {
-                            "fontSize": 20,
+                            "fontSize": 16, # Keep original font size
                             "fontWeight": "bold",
                             "backgroundColor": "#ffffff",
-                            "borderColor": "#1976D2", # Highlight border color
-                            "borderWidth": 2
+                            "borderColor": "inherit", # Keep original border color
+                            "borderWidth": 2 # Keep original border width
                         }
                     }
-                },
-                {
-                    "type": "lines",
-                    "coordinateSystem": "cartesian2d",
-                    "zlevel": 2,
-                    "effect": {
-                        "show": False, 
-                        "period": 3, # Slightly faster
-                        "trailLength": 0.4, # Longer tail
-                        "symbol": "circle", 
-                        "symbolSize": 6 # Slightly larger particle
-                    },
-                    "lineStyle": {
-                        "color": "transparent", 
-                        "width": 0
-                    },
-                    "emphasis": {
-                        "focus": "adjacency",
-                        "effect": {
-                            "show": True 
-                        }
-                    },
-                    "data": lines_data
                 }
             ]
         }
@@ -368,11 +317,11 @@ if st.sidebar.button("Train Model"):
         st.markdown("""
         <style>
         .echarts-container {
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
             padding: 15px;
-            background-color: #FAFAFA;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
         </style>
         """, unsafe_allow_html=True)
