@@ -384,11 +384,10 @@ if st.sidebar.button("Train Model"):
         st.markdown("""
         <style>
         .echarts-container {
-            border: 1px solid #f0f0f0;
-            border-radius: 12px;
-            padding: 15px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: none;
+            padding: 0;
+            background-color: transparent;
+            box-shadow: none;
         }
         </style>
         """, unsafe_allow_html=True)
