@@ -12,40 +12,6 @@ A minimal, interactive implementation of the Baum-Welch (Expectation-Maximizatio
 
 ---
 
-## Installation & Setup
-
-Follow these steps to download and run the project on your local machine.
-
-### 1. Clone the Repository
-First, download the project files to your computer using Git:
-```powershell
-git clone <your-repository-url>
-cd HMM-Baum-Welch
-```
-*(If you downloaded the project as a ZIP file, simply extract it and open the folder in your terminal).
-
-### 2. Create a Virtual Environment (Recommended)
-It is highly recommended to create a Python virtual environment to keep the project dependencies isolated from your system Python.
-
-```powershell
-# Create a virtual environment named 'venv'
-python -m venv venv
-
-# Activate the virtual environment (Windows)
-.\venv\Scripts\activate
-
-# Activate the virtual environment (Mac/Linux)
-# source venv/bin/activate
-```
-
-### 3. Install Dependencies
-With the virtual environment activated, install all required Python packages:
-```powershell
-pip install -r requirements.txt
-```
-
----
-
 ## User Manual & Quick Start
 
 ### 1. Run the Interactive Web App (Recommended)
@@ -96,6 +62,40 @@ python train.py
 - **Emission Matrix ($B$)**
 - **Log Likelihood $P(O | \lambda)$**
 - **Convergence Graph** (Log likelihood vs Iterations)
+
+---
+
+## Installation & Setup
+
+Follow these steps to download and run the project on your local machine.
+
+### 1. Clone the Repository
+First, download the project files to your computer using Git:
+```powershell
+git clone https://github.com/Surya-T-S/HMM-Baum-welch-visualizer.git
+cd HMM-Baum-welch-visualizer
+```
+*(If you downloaded the project as a ZIP file, simply extract it and open the folder in your terminal).
+
+### 2. Create a Virtual Environment (Recommended)
+It is highly recommended to create a Python virtual environment to keep the project dependencies isolated from your system Python.
+
+```powershell
+# Create a virtual environment named 'venv'
+python -m venv venv
+
+# Activate the virtual environment (Windows)
+.\venv\Scripts\activate
+
+# Activate the virtual environment (Mac/Linux)
+# source venv/bin/activate
+```
+
+### 3. Install Dependencies
+With the virtual environment activated, install all required Python packages:
+```powershell
+pip install -r requirements.txt
+```
 
 ---
 
