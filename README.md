@@ -5,8 +5,8 @@ A minimal, interactive implementation of the Baum-Welch (Expectation-Maximizatio
 ---
 
 <div align="center">
-  <h1><b>Surya T S</b></h1>
-  <h2><b>TCR24CS069</b></h2>
+  <h1><b>Name: Surya T S</b></h1>
+  <h2><b>University Reg no: TCR24CS069</b></h2>
 </div>
 
 ---
