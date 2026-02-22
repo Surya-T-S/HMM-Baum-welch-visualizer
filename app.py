@@ -145,9 +145,13 @@ if st.sidebar.button("Train Model"):
         import math
         
         # Intelligently place nodes in a perfect circle
-        radius = 100 
+        # INCREASED RADIUS significantly to spread states out much further
+        radius = 180 
         center_x = 0
         center_y = 0
+        
+        # Distinct, vibrant color palette for each state to make transitions distinguishable
+        state_colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']
         
         for i in range(n_states):
             # Calculate angle for this node (evenly spaced around a circle)
@@ -157,21 +161,28 @@ if st.sidebar.button("Train Model"):
             x = center_x + radius * math.cos(angle)
             y = center_y + radius * math.sin(angle)
             
+            color = state_colors[i % len(state_colors)]
+            initial_prob = model.startprob_[i]
+            
             nodes.append({
                 "name": f"State {i}",
                 "value": [x, y], # Coordinates for cartesian2d
-                "tooltip": {"formatter": "{b}"}, # Only show name on hover
-                "symbolSize": 80,
+                "tooltip": {
+                    "formatter": f"<div style='text-align:center; padding:5px;'><b>State {i}</b><br/><hr style='margin:5px 0;border:none;border-top:1px solid #ccc;'/>Initial Probability: <br/><b style='font-size:16px; color:{color};'>{initial_prob:.2%}</b></div>"
+                },
+                "symbolSize": 100, # INCREASED NODE SIZE for better visibility
                 "itemStyle": {
-                    "color": "#E1F5FE",
-                    "borderColor": "#0288D1",
-                    "borderWidth": 3
+                    "color": "#ffffff", # Clean white background
+                    "borderColor": color, # Unique color for each state
+                    "borderWidth": 4, # Thicker border
+                    "shadowBlur": 10, # Add drop shadow to nodes
+                    "shadowColor": "rgba(0,0,0,0.2)"
                 },
                 "label": {
                     "show": True,
-                    "fontSize": 16,
+                    "fontSize": 18, # Larger font
                     "fontWeight": "bold",
-                    "color": "#000",
+                    "color": color, # Match border color
                     "position": "inside",
                     "formatter": "{b}" # Show name
                 }
@@ -182,12 +193,13 @@ if st.sidebar.button("Train Model"):
         lines_data = []
         
         for i in range(n_states):
+            source_color = state_colors[i % len(state_colors)]
             for j in range(n_states):
                 prob = model.transmat_[i, j]
                 if prob > 0.01:
                     # Calculate curvature to prevent overlapping of mutual edges
                     if i == j:
-                        curveness = 0.6 # Self loop (tight curve)
+                        curveness = 0.7 # Self loop (tighter curve to keep it compact)
                     else:
                         curveness = 0.25
                     
@@ -196,39 +208,40 @@ if st.sidebar.button("Train Model"):
                         "source": f"State {i}",
                         "target": f"State {j}",
                         "value": float(prob),
-                        "tooltip": {"formatter": "{b}: {c}"}, # Show probability on hover
+                        "tooltip": {
+                            "formatter": f"<div style='padding:5px;'><b>Transition</b><br/><hr style='margin:5px 0;border:none;border-top:1px solid #ccc;'/>From: <b>State {i}</b><br/>To: <b>State {j}</b><br/>Probability: <b style='font-size:14px; color:{source_color};'>{prob:.2%}</b> <span style='color:#888;'>({prob:.4f})</span></div>"
+                        },
                         "label": {
                             "show": True,
-                            "formatter": f"{prob:.3f}",
-                            "fontSize": 14,
+                            "formatter": f"{prob:.2f}",
+                            "fontSize": 14, 
                             "fontWeight": "bold",
-                            "color": "#000",
-                            "backgroundColor": "rgba(255,255,255,1.0)",
-                            "padding": [4, 6],
-                            "borderRadius": 4,
-                            "borderWidth": 1,
-                            "borderColor": "#000"
+                            "color": "#333", 
+                            "backgroundColor": "#ffffff", 
+                            "padding": [4, 6], 
+                            "borderRadius": 4, 
+                            "borderWidth": 1.5, 
+                            "borderColor": source_color # Border matches the source state
                         },
                         "lineStyle": {
-                            "width": max(2.0, prob * 8),
+                            "width": max(2.5, prob * 10), # Thicker lines overall
                             "curveness": curveness,
-                            "color": "#00796B" if i == j else "#546E7A",
-                            "opacity": 0.8
+                            "color": source_color, # Line color matches the source state
+                            "opacity": 0.6 # Lower default opacity so overlapping lines don't create dark blobs
                         }
                     })
                     
                     # 2. Animated particle edge (only for transitions between different states)
                     if i != j:
-                        # Calculate exact start and end points on the edge of the circle (radius 40)
-                        # instead of the center of the circle, so the animation stops at the border
+                        # Calculate exact start and end points on the edge of the circle
                         dx = nodes[j]["value"][0] - nodes[i]["value"][0]
                         dy = nodes[j]["value"][1] - nodes[i]["value"][1]
                         dist = math.hypot(dx, dy)
                         
                         if dist > 0:
-                            # Node radius is 40 (symbolSize is 80, so radius is 40)
-                            # We add a tiny bit of padding (45) so it stops right at the border
-                            node_radius = 45
+                            # Node radius is 50 (symbolSize is 100, so radius is 50)
+                            # We add padding (55) so it stops right at the border
+                            node_radius = 55
                             
                             # Direction vector
                             dir_x = dx / dist
@@ -251,7 +264,7 @@ if st.sidebar.button("Train Model"):
                                     "curveness": curveness
                                 },
                                 "effect": {
-                                    "color": "#546E7A" # Match the color of the line
+                                    "color": source_color # Particle matches the source state color
                                 }
                             })
                     
@@ -261,25 +274,31 @@ if st.sidebar.button("Train Model"):
                 "text": "Interactive State Transitions (Drag background to pan, scroll to zoom)",
                 "left": "center",
                 "textStyle": {
-                    "fontSize": 16,
+                    "fontSize": 18,
                     "fontWeight": "bold",
-                    "color": "#333"
+                    "color": "#2C3E50"
                 }
             },
             "tooltip": {
-                "trigger": "item"
+                "trigger": "item",
+                "backgroundColor": "rgba(255, 255, 255, 0.95)",
+                "borderColor": "#ccc",
+                "borderWidth": 1,
+                "textStyle": {
+                    "color": "#333"
+                }
             },
             "xAxis": {
                 "show": False,
                 "type": "value",
-                "min": -radius * 1.5,
-                "max": radius * 1.5
+                "min": -radius * 1.8, # Increased bounds to prevent clipping
+                "max": radius * 1.8
             },
             "yAxis": {
                 "show": False,
                 "type": "value",
-                "min": -radius * 1.5,
-                "max": radius * 1.5
+                "min": -radius * 1.8,
+                "max": radius * 1.8
             },
             "dataZoom": [
                 {
@@ -296,23 +315,26 @@ if st.sidebar.button("Train Model"):
             "series": [
                 {
                     "type": "graph",
-                    "coordinateSystem": "cartesian2d", # Use cartesian to allow panning/zooming and align with lines
-                    "symbolSize": 80,
+                    "coordinateSystem": "cartesian2d", 
+                    "symbolSize": 100, # Match new node size
                     "edgeSymbol": ["none", "arrow"],
-                    "edgeSymbolSize": [0, 16],
+                    "edgeSymbolSize": [0, 20], # Larger arrows
                     "data": nodes,
                     "links": links,
                     "emphasis": {
                         "focus": "adjacency",
                         "lineStyle": {
-                            "width": 8,
-                            "opacity": 1,
-                            "shadowBlur": 10,
-                            "shadowColor": "rgba(0, 0, 0, 0.5)"
+                            "width": 10, # Much thicker on hover
+                            "opacity": 1, # Fully opaque on hover
+                            "shadowBlur": 15,
+                            "shadowColor": "rgba(0, 0, 0, 0.4)"
                         },
                         "label": {
-                            "fontSize": 18,
-                            "fontWeight": "bold"
+                            "fontSize": 20,
+                            "fontWeight": "bold",
+                            "backgroundColor": "#ffffff",
+                            "borderColor": "#1976D2", # Highlight border color
+                            "borderWidth": 2
                         }
                     }
                 },
@@ -321,20 +343,20 @@ if st.sidebar.button("Train Model"):
                     "coordinateSystem": "cartesian2d",
                     "zlevel": 2,
                     "effect": {
-                        "show": False, # Hide animation by default
-                        "period": 4, # Slower, more subtle animation
-                        "trailLength": 0.3, # Longer, softer tail
-                        "symbol": "circle", # Use a soft circle instead of a sharp arrow
-                        "symbolSize": 4 # Smaller, more subtle particle
+                        "show": False, 
+                        "period": 3, # Slightly faster
+                        "trailLength": 0.4, # Longer tail
+                        "symbol": "circle", 
+                        "symbolSize": 6 # Slightly larger particle
                     },
                     "lineStyle": {
-                        "color": "transparent", # Hide the static line, only show the animated particle
+                        "color": "transparent", 
                         "width": 0
                     },
                     "emphasis": {
                         "focus": "adjacency",
                         "effect": {
-                            "show": True # Show animation only on hover
+                            "show": True 
                         }
                     },
                     "data": lines_data
@@ -346,16 +368,17 @@ if st.sidebar.button("Train Model"):
         st.markdown("""
         <style>
         .echarts-container {
-            border: 2px solid black;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #FAFAFA;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         </style>
         """, unsafe_allow_html=True)
         
         st.markdown('<div class="echarts-container">', unsafe_allow_html=True)
-        st_echarts(options=option, height="650px") # Increased height for more vertical space
+        st_echarts(options=option, height="700px") # Increased height for massive visibility
         st.markdown('</div>', unsafe_allow_html=True)
             
     except Exception as e:
