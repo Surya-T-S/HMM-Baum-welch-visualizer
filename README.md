@@ -35,20 +35,13 @@ python -m streamlit run app.py
 ```
 
 #### How to use the Web App:
-1. **Input Parameters**: On the left sidebar, enter the number of hidden states, the number of unique observations, and the maximum number of iterations for the Baum-Welch algorithm.
-2. **Observation Sequence**: Enter a comma-separated list of integers representing your observation sequence (e.g., `0, 1, 0, 2, 1`). Ensure the numbers are between `0` and `Number of Observations - 1`.
-3. **Train Model**: Click the "Train HMM Model" button.
-4. **View Results**: 
-   - The app will display the learned Initial Distribution ($\pi$), Transition Matrix ($A$), and Emission Matrix ($B$).
-   - It will also show the Final Log Likelihood and the actual Probability $P(O | \lambda)$.
-5. **Analyze Convergence**: Two interactive Plotly graphs will appear showing the Log Likelihood and $1 - P(O | \lambda)$ over the training iterations. You can hover, zoom, and pan these graphs.
-6. **Explore State Transitions**: Scroll down to the interactive ECharts diagram. 
-   - **Hover** over states to see their initial probabilities.
-   - **Hover** over the dashed transition lines to highlight specific paths and see the exact transition probabilities.
-   - **Drag** the background to pan around the diagram, and **scroll** your mouse wheel to zoom in and out.
+1. **Input Parameters**: Enter the number of hidden states, unique observations, and max iterations in the sidebar.
+2. **Observation Sequence**: Enter a comma-separated list of integers (e.g., `0, 1, 0, 2, 1`).
+3. **Train Model**: Click the "Train HMM Model" button to view the learned matrices ($\pi$, $A$, $B$) and Final Log Likelihood.
+4. **Analyze & Explore**: Interact with the Plotly convergence graphs and hover/drag the ECharts state transition diagram to explore probabilities.
 
 ### 2. Run the CLI Version
-For a quick terminal-based execution that prints the matrices and final probabilities directly to the console:
+For a quick terminal-based execution:
 
 ```powershell
 python train.py
