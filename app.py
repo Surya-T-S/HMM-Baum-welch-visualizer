@@ -100,7 +100,10 @@ if st.sidebar.button("Train Model"):
             xaxis_title="Iteration",
             yaxis_title="Log Likelihood",
             template="plotly_white",
-            hovermode="x unified"
+            hovermode="x unified",
+            margin=dict(l=40, r=40, t=40, b=40),
+            xaxis=dict(showline=True, linewidth=2, linecolor='black', mirror=True),
+            yaxis=dict(showline=True, linewidth=2, linecolor='black', mirror=True)
         )
         
         # Plot 2: 1 - P(O | lambda) vs Iterations
@@ -121,7 +124,10 @@ if st.sidebar.button("Train Model"):
             xaxis_title="Iteration",
             yaxis_title="1 - Probability",
             template="plotly_white",
-            hovermode="x unified"
+            hovermode="x unified",
+            margin=dict(l=40, r=40, t=40, b=40),
+            xaxis=dict(showline=True, linewidth=2, linecolor='black', mirror=True),
+            yaxis=dict(showline=True, linewidth=2, linecolor='black', mirror=True)
         )
         
         col_fig1, col_fig2 = st.columns(2)
