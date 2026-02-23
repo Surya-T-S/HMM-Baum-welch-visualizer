@@ -7,6 +7,7 @@ A minimal, interactive implementation of the Baum-Welch (Expectation-Maximizatio
 <div align="center">
   <h1><b>Creator: Surya T S</b></h1>
   <h2><b>University Register Number: TCR24CS069</b></h2>
+  <h3><b>🌐 Live App: <a href="https://hmm-baum-welch-visualizer.streamlit.app/">hmm-baum-welch-visualizer.streamlit.app</a></b></h3>
 </div>
 
 ---
